@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"log/slog"
 	"net/http"
+	"web-page-analyzer/internal/validator"
 )
 
 // registerRoutes registers all HTTP endpoints
@@ -22,7 +23,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // analyzeHandler handles form submissions from the UI.
-// It extracts the URL provided by the user and triggers
+// extracts the URL provided by the user and triggers
 func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 	// Only POST requests are allowed for analysis.
 	if r.Method != http.MethodPost {
@@ -33,9 +34,14 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 	// Extract the URL from the submitted form.
 	url := r.FormValue("url")
 
+	// Validate the URL before processing
+	if err := validator.ValidateURL(url); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	// Log the incoming analysis request.
 	slog.Info("received analyze request", "url", url)
 
-	// Temporary response until analysis logic is implemented.
 	w.Write([]byte("Analysis started for: " + url))
 }
