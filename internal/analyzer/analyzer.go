@@ -10,6 +10,11 @@ import "context"
 func Analyze(ctx context.Context, url string) error {
 	// TODO:
 	// 1. Fetch HTML content
+	_, _, err := FetchHTML(ctx, url)
+	if err != nil {
+		return err
+	}
+
 	// 2. Parse document structure
 	// 3. Analyze links
 	// 4. Detect login forms
