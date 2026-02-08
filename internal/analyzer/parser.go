@@ -8,8 +8,8 @@ import (
 
 // ParseHTML analyzes raw HTML content and extracts
 // structural information required by the application.
-// First Parentheses ( html string ) → Input Parameters
-// Second Parentheses ( title string, htmlVersion string, headings map[string]int, hasLoginForm bool, err error ) → Return Values
+// First Parentheses ( html string ) -> input Parameters
+// Second Parentheses ( title string, htmlVersion string, headings map[string]int, hasLoginForm bool, err error ) -> Return Values
 func ParseHTML(html string) (title string, htmlVersion string, headings map[string]int, hasLoginForm bool, error error) {
 	// Initialize heading counters
 	headings = make(map[string]int)
@@ -41,16 +41,16 @@ func ParseHTML(html string) (title string, htmlVersion string, headings map[stri
 
 // detectHTMLVersion inspects the DOCTYPE declaration
 func detectHTMLVersion(html string) string {
-	upper := strings.ToUpper(html)
+	upperHtml := strings.ToUpper(html)
 
 	switch {
-	case strings.Contains(upper, "<!DOCTYPE HTML>"):
+	case strings.Contains(upperHtml, "<!DOCTYPE HTML>"):
 		return "HTML5"
-	case strings.Contains(upper, "XHTML"):
+	case strings.Contains(upperHtml, "XHTML"):
 		return "XHTML"
-	case strings.Contains(upper, "HTML 4.01"):
+	case strings.Contains(upperHtml, "HTML 4.01"):
 		return "HTML 4.01"
-	case strings.Contains(upper, "<!DOCTYPE"):
+	case strings.Contains(upperHtml, "<!DOCTYPE"):
 		return "Unknown HTML (Doctype Present)"
 	default:
 		return "Unknown (No Doctype)"

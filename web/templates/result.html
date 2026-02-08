@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Analysis Result</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+
+<h1>Analysis Result</h1>
+
+<div class="section">
+    <div class="result-item"><strong>URL:</strong> {{.URL}}</div>
+    <div class="result-item"><strong>HTML Version:</strong> {{.HTMLVersion}}</div>
+    <div class="result-item"><strong>Title:</strong> {{.Title}}</div>
+    <div class="result-item"><strong>Login Form Present:</strong> {{.HasLoginForm}}</div>
+</div>
+
+<div class="section">
+<h2>Headings</h2>
+<ul>
+    <li>h1 : {{index .Headings "h1"}}</li>
+    <li>h2 : {{index .Headings "h2"}}</li>
+    <li>h3 : {{index .Headings "h3"}}</li>
+    <li>h4 : {{index .Headings "h4"}}</li>
+    <li>h5 : {{index .Headings "h5"}}</li>
+    <li>h6 : {{index .Headings "h6"}}</li>
+</ul>
+</div>
+
+<div class="section">
+<h2>Links</h2>
+<div>Internal Links: {{.InternalLinks}}</div>
+<div>External Links: {{.ExternalLinks}}</div>
+<div>Inaccessible Links: {{.InaccessibleLinks}}</div>
+</div>
+
+<br>
+<a href="/">Analyze another URL</a>
+
+</div>
+
+</body>
+</html>

@@ -1,9 +1,13 @@
 package server
 
 import (
+	"context"
 	"html/template"
 	"log/slog"
 	"net/http"
+	"time"
+
+	"web-page-analyzer/internal/analyzer"
 	"web-page-analyzer/internal/validator"
 )
 
@@ -12,6 +16,7 @@ import (
 func registerRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("/", indexHandler)
 	mux.HandleFunc("/analyze", analyzeHandler)
+	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("web/static"))))
 }
 
 // indexHandler renders the home page that contains
@@ -43,5 +48,21 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 	// Log the incoming analysis request.
 	slog.Info("received analyze request", "url", url)
 
-	w.Write([]byte("Analysis started for: " + url))
+	// Create a bounded context for the analysis
+	ctx, cancel := context.WithTimeout(r.Context(), 20*time.Second)
+	defer cancel()
+
+	// Run analysis
+	result, err := analyzer.Analyze(ctx, url)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadGateway)
+		return
+	}
+
+	// Render result template
+	tmpl := template.Must(template.ParseFiles("web/templates/result.html"))
+	if err := tmpl.Execute(w, result); err != nil {
+		http.Error(w, "failed to render result", http.StatusInternalServerError)
+		return
+	}
 }

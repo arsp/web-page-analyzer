@@ -5,7 +5,12 @@ package model
 //
 // This struct contains only data and no business logic,
 type AnalysisResult struct {
-	URL         string
-	HTMLVersion string
-	Title       string
+	URL               string
+	HTMLVersion       string
+	Title             string
+	Headings          map[string]int
+	InternalLinks     int
+	ExternalLinks     int
+	InaccessibleLinks int
+	HasLoginForm      bool
 }
