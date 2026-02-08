@@ -16,22 +16,22 @@ func FetchHTML(ctx context.Context, targetURL string) (string, int, error) {
 	}
 
 	// create a new HTTP request
-	request, error := http.NewRequestWithContext(ctx, http.MethodGet, targetURL, nil)
-	if error != nil {
-		return "", 0, fmt.Errorf("failed to create request: %w", error)
+	request, err := http.NewRequestWithContext(ctx, http.MethodGet, targetURL, nil)
+	if err != nil {
+		return "", 0, fmt.Errorf("failed to create request: %w", err)
 	}
 
 	// Execute the request.
-	response, error := client.Do(request)
-	if error != nil {
-		return "", 0, fmt.Errorf("failed to fetch url: %w", error)
+	response, err := client.Do(request)
+	if err != nil {
+		return "", 0, fmt.Errorf("failed to fetch url: %w", err)
 	}
 	defer response.Body.Close()
 
 	// Get the response body.
-	body, error := io.ReadAll(response.Body)
-	if error != nil {
-		return "", response.StatusCode, fmt.Errorf("failed to read response body: %w", error)
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		return "", response.StatusCode, fmt.Errorf("failed to read response body: %w", err)
 	}
 
 	// Handle non 200 responses as errors

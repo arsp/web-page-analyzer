@@ -11,6 +11,11 @@ import (
 	"web-page-analyzer/internal/validator"
 )
 
+type ErrorPage struct {
+	StatusCode int
+	Message    string
+}
+
 // registerRoutes registers all HTTP endpoints
 // exposed by the application.
 func registerRoutes(mux *http.ServeMux) {
@@ -41,7 +46,8 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Validate the URL before processing
 	if err := validator.ValidateURL(url); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		// http.Error(w, err.Error(), http.StatusBadRequest)
+		renderError(w, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -53,9 +59,10 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 
 	// Run analysis
-	result, err := analyzer.Analyze(ctx, url)
+	result, status, err := analyzer.Analyze(ctx, url)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadGateway)
+		// http.Error(w, error.Error(), http.StatusBadGateway)
+		renderError(w, status, err.Error())
 		return
 	}
 
@@ -65,4 +72,15 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "failed to render result", http.StatusInternalServerError)
 		return
 	}
+}
+
+// renderError renders a user-friendly error page with the provided status code and message.
+func renderError(w http.ResponseWriter, statusCode int, message string) {
+	w.WriteHeader(statusCode)
+
+	tmpl := template.Must(template.ParseFiles("web/templates/error.html"))
+	_ = tmpl.Execute(w, ErrorPage{
+		StatusCode: statusCode,
+		Message:    message,
+	})
 }

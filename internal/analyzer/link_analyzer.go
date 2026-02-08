@@ -152,14 +152,14 @@ func isAccessible(ctx context.Context, link string) bool {
 	}
 
 	// Head method checks if resource exists and does not download the body
-	request, error := http.NewRequestWithContext(ctx, http.MethodHead, link, nil)
-	if error != nil {
+	request, err := http.NewRequestWithContext(ctx, http.MethodHead, link, nil)
+	if err != nil {
 		return false
 	}
 
 	// send request
-	response, error := client.Do(request)
-	if error != nil {
+	response, err := client.Do(request)
+	if err != nil {
 		return false
 	}
 	// close the responsebody

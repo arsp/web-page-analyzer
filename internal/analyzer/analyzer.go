@@ -13,29 +13,29 @@ import (
 // checking links, and aggregating the results.
 //
 // context parameter allows cancellation and timeout control.
-func Analyze(ctx context.Context, url string) (model.AnalysisResult, error) {
+func Analyze(ctx context.Context, url string) (model.AnalysisResult, int, error) {
 	// Step 1: Fetch HTML content
-	html, _, error := FetchHTML(ctx, url)
-	if error != nil {
-		return model.AnalysisResult{}, error
+	html, status, err := FetchHTML(ctx, url)
+	if err != nil {
+		return model.AnalysisResult{}, status, err
 	}
 
 	// Step 2: Parse document structure
-	title, version, headings, hasLogin, error := ParseHTML(html)
-	if error != nil {
-		return model.AnalysisResult{}, error
+	title, version, headings, hasLogin, err := ParseHTML(html)
+	if err != nil {
+		return model.AnalysisResult{}, status, err
 	}
 
 	// Step 3: Create goquery document, needed for link analysis
-	doc, error := goquery.NewDocumentFromReader(strings.NewReader(html))
-	if error != nil {
-		return model.AnalysisResult{}, error
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
+	if err != nil {
+		return model.AnalysisResult{}, status, err
 	}
 
 	// Step 4: Analyze links
-	linkStats, error := AnalyzeLinks(ctx, url, doc)
-	if error != nil {
-		return model.AnalysisResult{}, error
+	linkStats, err := AnalyzeLinks(ctx, url, doc)
+	if err != nil {
+		return model.AnalysisResult{}, status, err
 	}
 
 	// Step 5: Aggregate result
@@ -50,5 +50,5 @@ func Analyze(ctx context.Context, url string) (model.AnalysisResult, error) {
 		HasLoginForm:      hasLogin,
 	}
 
-	return result, nil
+	return result, status, nil
 }

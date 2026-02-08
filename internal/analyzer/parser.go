@@ -10,7 +10,7 @@ import (
 // structural information required by the application.
 // First Parentheses ( html string ) -> input Parameters
 // Second Parentheses ( title string, htmlVersion string, headings map[string]int, hasLoginForm bool, err error ) -> Return Values
-func ParseHTML(html string) (title string, htmlVersion string, headings map[string]int, hasLoginForm bool, error error) {
+func ParseHTML(html string) (title string, htmlVersion string, headings map[string]int, hasLoginForm bool, err error) {
 	// Initialize heading counters
 	headings = make(map[string]int)
 
@@ -18,9 +18,9 @@ func ParseHTML(html string) (title string, htmlVersion string, headings map[stri
 	htmlVersion = detectHTMLVersion(html)
 
 	// Parse HTML using goquery
-	doc, error := goquery.NewDocumentFromReader(strings.NewReader(html))
-	if error != nil {
-		return "", "", nil, false, error
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(html))
+	if err != nil {
+		return "", "", nil, false, err
 	}
 
 	// Extract page title
