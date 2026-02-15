@@ -24,7 +24,9 @@ func FetchHTML(ctx context.Context, targetURL string) (string, int, error) {
 	// Execute the request.
 	response, err := client.Do(request)
 	if err != nil {
-		return "", 0, fmt.Errorf("failed to fetch url: %w", err)
+		// return "", 0, fmt.Errorf("failed to fetch url: %w", err)
+		// This is where unreachable host/DNS/network errors occur
+		return "", 0, fmt.Errorf("unable to reach host: %w", err)
 	}
 	defer response.Body.Close()
 

@@ -76,6 +76,11 @@ func analyzeHandler(w http.ResponseWriter, r *http.Request) {
 
 // renderError renders a user-friendly error page with the provided status code and message.
 func renderError(w http.ResponseWriter, statusCode int, message string) {
+	// Fallback for network/DNS errors
+	if statusCode == 0 {
+		statusCode = http.StatusBadGateway
+	}
+
 	w.WriteHeader(statusCode)
 
 	tmpl := template.Must(template.ParseFiles("web/templates/error.html"))
