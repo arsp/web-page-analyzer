@@ -117,33 +117,6 @@ func resolveLink(base *url.URL, href string) *url.URL {
 	return base.ResolveReference(u)
 }
 
-// extractLinks collects href attributes from anchor tags.
-func extractLinks(doc *goquery.Document) []string {
-	var links []string
-
-	doc.Find("a[href]").Each(func(_ int, s *goquery.Selection) {
-		// get the href attribute's value
-		href, _ := s.Attr("href")
-
-		if shouldIgnoreLink(href) {
-			return
-		}
-
-		links = append(links, href)
-	})
-
-	return links
-}
-
-// shouldIgnoreLink filters out non-HTTP links.
-func shouldIgnoreLink(href string) bool {
-	href = strings.TrimSpace(href)
-	return href == "" ||
-		strings.HasPrefix(href, "mailto:") ||
-		strings.HasPrefix(href, "tel:") ||
-		strings.HasPrefix(href, "javascript:")
-}
-
 // isAccessible Checks whether a given link is reachable over HTTP
 func isAccessible(ctx context.Context, link string) bool {
 	// Timeout for network calls can hang
